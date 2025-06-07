@@ -1,13 +1,15 @@
 #pragma once
 
 #include "stm32f413xx.h"
+#include <stdint.h>
 
 #include "default_mode.h"
 
 #include "communication.h"
 #include "user_io.h"
-#include "io_driver.h"
+#include "uart.h"
 #include "device_descriptor.h"
+
 
 // main device class that contains all the other classes
 
@@ -32,13 +34,13 @@ class device {
         // create all low level classes
         communication Comm = communication(&logs); // communication with the controller
         user_io UserIO = user_io(); // user interface (DIP switches and LED)
-        estop_io EstopIO = estop_io();
+        uart Uart = uart(&logs); // UART communication with the controller
 
         bool hse_vcxo_available = false;
         
         // create all modes
 
-        Mode Default_Mode = Mode(&logs, &EstopIO, &comm_vars);
+        Mode Default_Mode = Mode(&logs, &comm_vars);
                 
         Mode* current_mode = &Default_Mode; // pointer to the current mode
 
@@ -77,6 +79,12 @@ class device {
         bool tim1_up_tim10_flag = false; // flag set by the TIM1_UP_TIM10_IRQHandler
         void flagged_tim1_up_tim10(); // called when the tim1_up_tim10_flag is set
         bool tim1_update_missed = false; // flag set when the TIM1_UP_TIM10_IRQHandler is missed
+
+        bool uart4_flag = false; // flag set by the UART4_IRQHandler
+        void flagged_uart4(); // called when the uart4_flag is set
+
+        bool dma1_stream2_flag = false; // flag set by the DMA1_Stream2_IRQHandler
+        void flagged_dma1_stream2(); // called when the dma1_stream2_flag is set
         
 
     public: // interrupt handlers, every possible interrupt should be defined here

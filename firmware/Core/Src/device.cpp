@@ -13,14 +13,14 @@ void device::init(){
     sysTick_init();
 
     // comment out for debugging
-    watchdog_init(); // initialize the watchdog timer
+    //watchdog_init(); // initialize the watchdog timer
 
     logs.init();
     logs.comm_vars = comm_vars;
     // Initialize all the low level classes
     Comm.init();
     UserIO.init();
-    EstopIO.init();
+    Uart.init();
 
 
     micros = Comm.micros;
@@ -43,7 +43,7 @@ void device::init(){
     // check for watchdog reset flag
     if(RCC->CSR & RCC_CSR_IWDGRSTF){ // watchdog reset flag is set
         RCC->CSR |= RCC_CSR_RMVF; // clear the reset flag
-        logs.add(system_messages::watchdog_timeout);
+        logs.add((uint32_t)system_messages::watchdog_timeout);
     }
 }
 
@@ -181,7 +181,13 @@ void device::run(){
             watchdog_reload(); // reload the watchdog timer
         }
         if(tim1_update_missed){
-            logs.add(system_messages::control_deadline_missed);
+            logs.add((uint32_t)system_messages::control_deadline_missed);
+        }
+        if(uart4_flag){
+            flagged_uart4();
+        }
+        if(dma1_stream2_flag){
+            flagged_dma1_stream2();
         }
 
         // handle requested state changes from controller
@@ -191,11 +197,11 @@ void device::run(){
                     break; // nothing
                 case 1:
                     // only one state
-                    logs.add(system_messages::invalid_state);
+                    logs.add((uint32_t)system_messages::invalid_state);
                     break;
                 case 2:
                     // only one state
-                    logs.add(system_messages::invalid_state);
+                    logs.add((uint32_t)system_messages::invalid_state);
                     break;
                 case 3:
                     logs.clear_all(); // clear all faults
@@ -204,7 +210,7 @@ void device::run(){
                     // only one mode
                     break;
                 default:
-                    logs.add(system_messages::invalid_state); // invalid state requested
+                    logs.add((uint32_t)system_messages::invalid_state); // invalid state requested
                     break;
             }
             last_controller_requested_state = vars.requested_state;
@@ -219,6 +225,18 @@ void device::run(){
             critical_shutdown();
         }
 
+        // copy output variables to the communication variables
+        if(Uart.new_data_available()){
+            auto data = Uart.get_data();
+            comm_vars->axis_0_position = data.axis_0;
+            comm_vars->axis_1_position = data.axis_1;
+            comm_vars->axis_2_position = data.axis_2;
+            comm_vars->axis_3_position = data.axis_3;
+            comm_vars->axis_4_position = data.axis_4;
+            comm_vars->axis_5_position = data.axis_5;
+            comm_vars->button_0_state = data.button;
+        }
+
         // run additional mode functions
         current_mode->default_run();
         current_mode->run();
@@ -228,7 +246,7 @@ void device::run(){
 void device::update(){
 
     if(!Comm.is_ok()){
-        logs.add(communication_messages::timeout_error); // communication timeout error, this will trigger the entire system to shutdown
+        logs.add((uint32_t)communication_messages::timeout_error); // communication timeout error, this will trigger the entire system to shutdown
     }
 
     update_leds();
@@ -309,6 +327,26 @@ void device::flagged_tim1_up_tim10(void){
 
 void device::USART6_IRQHandler(void){   // this handler is not flagged since it needs to be called immediately to ensure lowest jitter
     Comm.usart6_interrupt_handler();
+}
+
+void device::UART4_IRQHandler(void){
+    Uart.flagged_uart4_interrupt_handler();
+    //uart4_flag = true;
+}
+
+void device::flagged_uart4(void){
+    Uart.flagged_uart4_interrupt_handler();
+    uart4_flag = false;
+}
+
+void device::DMA1_Stream2_IRQHandler(void){
+    Uart.flagged_dma1_stream2_interrupt_handler();
+    //dma1_stream2_flag = true;
+}
+
+void device::flagged_dma1_stream2(void){
+    Uart.flagged_dma1_stream2_interrupt_handler();
+    dma1_stream2_flag = false;
 }
 
 device::IRQ device::missed_irq = IRQ::NONE;

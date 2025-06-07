@@ -1,14 +1,14 @@
 
 hardware:
-  type: 1 #32 bit
+  type: 2 #32 bit
   version: 0  #32 bit
-  readable_name: "Servo drive (model number goes here)"
-  description: "Servo drive designed for industrial high voltage motors"
+  readable_name: "6d mouse"
+  description: "S6d mouse for user input"
 
 firmware:
   version: 0
   release_date: "7/18/2024"
-  description: "Firmware for (model number goes here) rev (hardware rev number goes here) servo drive"
+  description: "Firmware for (model number goes here) rev (hardware rev number goes here)"
 
 
 message_severities:
@@ -39,183 +39,6 @@ messages:
       readable_name: "Invalic cyclic config"
       description: "Attempted to configure a cyclic value that either doesn't exist, or has incompatible permissions"
       severity: "warning"
-
-  checks:
-    brake_1_powered_when_off:
-      readable_name: "Brake 1 powered when off"
-      description: "Brake 1 is powered when it should be off"
-      time_delay_us: 50e3
-      severity: "critical"
-
-    brake_2_powered_when_off:
-      readable_name: "Brake 2 powered when off"
-      description: "Brake 2 is powered when it should be off"
-      time_delay_us: 50e3
-      severity: "critical"
-
-    brake_3_powered_when_off:
-      readable_name: "Brake 3 powered when off"
-      description: "Brake 3 is powered when it should be off"
-      time_delay_us: 50e3
-      severity: "critical"
-
-    brake_4_powered_when_off:
-      readable_name: "Brake 4 powered when off"
-      description: "Brake 4 is powered when it should be off"
-      time_delay_us: 50e3
-      severity: "critical"
-
-    brake_5_powered_when_off:
-      readable_name: "Brake 5 powered when off"
-      description: "Brake 5 is powered when it should be off"
-      time_delay_us: 50e3
-      severity: "critical"
-
-    brake_6_powered_when_off:
-      readable_name: "Brake 6 powered when off"
-      description: "Brake 6 is powered when it should be off"
-      time_delay_us: 50e3
-      severity: "critical"
-
-    brake_1_not_powered_when_on:
-      readable_name: "Brake 1 not powered when on"
-      description: "Brake 1 is not powered when it should be on"
-      time_delay_us: 30e3
-      severity: "critical"
-
-    brake_2_not_powered_when_on:
-      readable_name: "Brake 2 not powered when on"
-      description: "Brake 2 is not powered when it should be on"
-      time_delay_us: 30e3
-      severity: "critical"
-
-    brake_3_not_powered_when_on:
-      readable_name: "Brake 3 not powered when on"
-      description: "Brake 3 is not powered when it should be on"
-      time_delay_us: 30e3
-      severity: "critical"
-
-    brake_4_not_powered_when_on:
-      readable_name: "Brake 4 not powered when on"
-      description: "Brake 4 is not powered when it should be on"
-      time_delay_us: 30e3
-      severity: "critical"
-
-    brake_5_not_powered_when_on:
-      readable_name: "Brake 5 not powered when on"
-      description: "Brake 5 is not powered when it should be on"
-      time_delay_us: 30e3
-      severity: "critical"
-
-    brake_6_not_powered_when_on:
-      readable_name: "Brake 6 not powered when on"
-      description: "Brake 6 is not powered when it should be on"
-      time_delay_us: 30e3
-      severity: "critical"
-
-    brake_main_relay_stuck_on:
-      readable_name: "Brake relay 1 stuck on"
-      description: "Brake relay 1 is stuck on, likely a hardware fault"
-      time_delay_us: 30e3
-      severity: "critical"
-
-    brake_supply_missing:
-      readable_name: "Brake supply missing"
-      description: "Brake supply voltage is missing, likely a hardware fault"
-      time_delay_us: 30e3
-      severity: "critical"
-
-    estop_chain_mismatch:
-      readable_name: "E-stop channel mismatch"
-      description: "E-stop channels don't match, likely a hardware fault"
-      time_delay_us: 10e3
-      severity: "critical"
-
-    chain_relay_stuck_on:
-      readable_name: "Chain relay stuck on"
-      description: "A chain relay is stuck on, likely a hardware fault"
-      time_delay_us: 20e3
-      severity: "critical"
-
-    contactor_supply_missing:
-      readable_name: "Contactor supply missing"
-      description: "Contactor supply voltage is missing, likely a hardware fault"
-      time_delay_us: 30e3
-      severity: "critical"
-
-    isolation_contactor_powered_when_off:
-      readable_name: "Isolation contactor powered when off"
-      description: "Isolation contactor is powered when it should be off"
-      time_delay_us: 50e3
-      severity: "critical"
-
-    isolation_contactor_not_powered_when_on:
-      readable_name: "Isolation contactor not powered when on"
-      description: "Isolation contactor is not powered when it should be on"
-      time_delay_us: 30e3
-      severity: "critical"
-
-    main_contactor_powered_when_off:
-      readable_name: "Main contactor powered when off"
-      description: "Main contactor is powered when it should be off"
-      time_delay_us: 50e3
-      severity: "critical"
-
-    main_contactor_not_powered_when_on:
-      readable_name: "Main contactor not powered when on"
-      description: "Main contactor is not powered when it should be on"
-      time_delay_us: 30e3
-      severity: "critical"
-
-    precharge_contactor_powered_when_off:
-      readable_name: "Precharge contactor powered when off"
-      description: "Precharge contactor is powered when it should be off"
-      time_delay_us: 50e3
-      severity: "critical"
-
-    precharge_contactor_not_powered_when_on:
-      readable_name: "Precharge contactor not powered when on"
-      description: "Precharge contactor is not powered when it should be on"
-      time_delay_us: 30e3
-      severity: "critical"
-
-    isolation_contactor_feedback_missing_when_on:
-      readable_name: "Isolation contactor feedback missing when on"
-      description: "Isolation contactor feedback is missing when it should be on"
-      time_delay_us: 30e3
-      severity: "critical"
-
-    isolation_contactor_feedback_preset_when_off:
-      readable_name: "Isolation contactor feedback missing when off"
-      description: "Isolation contactor feedback is missing when it should be off"
-      time_delay_us: 30e3
-      severity: "critical"
-
-    main_contactor_feedback_missing_when_on:
-      readable_name: "Main contactor feedback missing when on"
-      description: "Main contactor feedback is missing when it should be on"
-      time_delay_us: 30e3
-      severity: "critical"
-
-    main_contactor_feedback_preset_when_off:
-      readable_name: "Main contactor feedback missing when off"
-      description: "Main contactor feedback is missing when it should be off"
-      time_delay_us: 30e3
-      severity: "critical"
-
-    precharge_contactor_feedback_missing_when_on:
-      readable_name: "Precharge contactor feedback missing when on"
-      description: "Precharge contactor feedback is missing when it should be on"
-      time_delay_us: 30e3
-      severity: "critical"
-
-    precharge_contactor_feedback_preset_when_off:
-      readable_name: "Precharge contactor feedback missing when off"
-      description: "Precharge contactor feedback is missing when it should be off"
-      time_delay_us: 30e3
-      severity: "critical"
-
-
 
   system:
     control_deadline_missed:
@@ -298,20 +121,6 @@ hard_parameters:
     readable_name: "System tick frequency"
     description: "System tick frequency, do not set above 1khz"
 
-  brake_minimum_off_time:
-    value: 1000
-    var_type: "uint16_t"
-    unit: "milliseconds"
-    readable_name: "Brake minimum off time"
-    description: "Minimum time to wait before turning on the brake again after it has been turned off, used to prevent rapid cycling of the brake relay"
-  
-  contactor_minimum_off_time:
-    value: 1000
-    var_type: "uint16_t"
-    unit: "milliseconds"
-    readable_name: "Contactor minimum off time"
-    description: "Minimum time to wait before turning on the contactor again after it has been turned off, used to prevent rapid cycling of the contactor relay"
-
   device_starting_address:
     value: 0
     var_type: "uint8_t"
@@ -371,137 +180,62 @@ registers:
     description: "FAULT_RESET: 3"
     permissions: "read/write"
 
-  STO_only:
-    value: 0
-    var_type: "uint8_t"
-    unit: ""
-    readable_name: "STO only"
-    description: "Set to 1 to enable the STO only mode, this will allow main power to stay on and only use STO to disable power"
-    permissions: "read/write"
 
-  enable_power:
+  axis_0_position:
     value: 0
-    var_type: "uint8_t"
-    unit: ""
-    readable_name: "Enable main power"
-    description: "Set to 1 to start power up sequence, 0 to disable power"
-    permissions: "read/write"
-
-  enable_required_inputs:
-    value: 0xFFFF
-    var_type: "uint16_t"
-    unit: ""
-    readable_name: "Enable main power required inputs"
-    description: "which aux inputs are required to enable startup (bitwise selection)"
-    permissions: "read/write"
-
-  dms_ok:
-    value: 0
-    var_type: "uint8_t"
-    unit: ""
-    readable_name: "DMS is ok"
-    description: "Deadman switch is enabled (movement allowed)"
+    var_type: "int32_t"
+    unit: "counts"
+    readable_name: "Axis 0 position"
+    description: "Current position of axis 0 in counts"
     permissions: "read"
 
-  estop_chain_ok:
+  axis_1_position:
     value: 0
-    var_type: "uint8_t"
-    unit: ""
-    readable_name: "E-stop chain ok"
-    description: "E-stop chain is ok (movement allowed)"
+    var_type: "int32_t"
+    unit: "counts"
+    readable_name: "Axis 1 position"
+    description: "Current position of axis 1 in counts"
     permissions: "read"
 
-  precharge_active:
+  axis_2_position:
     value: 0
-    var_type: "uint8_t"
-    unit: ""
-    readable_name: "Precharge active"
-    description: "Indicates if the precharge contactor is active (precharging)"
+    var_type: "int32_t"
+    unit: "counts"
+    readable_name: "Axis 2 position"
+    description: "Current position of axis 2 in counts"
     permissions: "read"
 
-  main_power_active:
+  axis_3_position:
     value: 0
-    var_type: "uint8_t"
-    unit: ""
-    readable_name: "Main power active"
-    description: "Indicates if the main power contactor is active (main power on)"
+    var_type: "int32_t"
+    unit: "counts"
+    readable_name: "Axis 3 position"
+    description: "Current position of axis 3 in counts"
     permissions: "read"
 
-  brake_status:
+  axis_4_position:
     value: 0
-    var_type: "uint8_t"
-    unit: ""
-    readable_name: "Brake status"
-    description: "Indicates if the brakes are active, bitwise (brakes released)"
+    var_type: "int32_t"
+    unit: "counts"
+    readable_name: "Axis 4 position"
+    description: "Current position of axis 4 in counts"
     permissions: "read"
 
-  enable_brakes:
+  axis_5_position:
+    value: 0
+    var_type: "int32_t"
+    unit: "counts"
+    readable_name: "Axis 5 position"
+    description: "Current position of axis 5 in counts"
+    permissions: "read"
+
+  button_0_state:
     value: 0
     var_type: "uint8_t"
     unit: ""
-    readable_name: "Enable brakes"
-    description: "bit 0: brake 1, bit 1: brake 2, bit 2: brake 3, bit 3: brake 4, bit 4: brake 5, bit 5: brake 6"
-    permissions: "read/write"
-
-  brake_1_required_inputs:
-    value: 0xFFFF
-    var_type: "uint16_t"
-    unit: ""
-    readable_name: "Brake 1 required inputs"
-    description: "which aux inputs are required to release the brake (bitwise selection)"
-    permissions: "read/write"
-
-  brake_2_required_inputs:
-    value: 0xFFFF
-    var_type: "uint16_t"
-    unit: ""
-    readable_name: "Brake 2 required inputs"
-    description: "which aux inputs are required to release the brake (bitwise selection)"
-    permissions: "read/write"
-
-  brake_3_required_inputs:
-    value: 0xFFFF
-    var_type: "uint16_t"
-    unit: ""
-    readable_name: "Brake 3 required inputs"
-    description: "which aux inputs are required to release the brake (bitwise selection)"
-    permissions: "read/write"
-
-  brake_4_required_inputs:
-    value: 0xFFFF
-    var_type: "uint16_t"
-    unit: ""
-    readable_name: "Brake 4 required inputs"
-    description: "which aux inputs are required to release the brake (bitwise selection)"
-    permissions: "read/write"
-
-  brake_5_required_inputs:
-    value: 0xFFFF
-    var_type: "uint16_t"
-    unit: ""
-    readable_name: "Brake 5 required inputs"
-    description: "which aux inputs are required to release the brake (bitwise selection)"
-    permissions: "read/write"
-
-  brake_6_required_inputs:
-    value: 0xFFFF
-    var_type: "uint16_t"
-    unit: ""
-    readable_name: "Brake 6 required inputs"
-    description: "which aux inputs are required to release the brake (bitwise selection)"
-    permissions: "read/write"
-
-  precharge_delay:
-    value: 3000
-    var_type: "uint16_t"
-    unit: "milliseconds"
-    readable_name: "Precharge delay"
-    description: "How long to wait before enabling the main contactor after precharge is started"
-    permissions: "read/write"
-
-  
-  
-  
+    readable_name: "Button 0 state"
+    description: "Current state of button 0, 1 = pressed, 0 = not pressed"
+    permissions: "read"
 
 
   ####################### COMMUNICATION REGISTERS #######################
