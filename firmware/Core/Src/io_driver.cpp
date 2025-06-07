@@ -161,7 +161,6 @@ void estop_io::read_inputs(void){
                 break;
         };
     }
-
 }
 
 void estop_io::write_outputs(void){

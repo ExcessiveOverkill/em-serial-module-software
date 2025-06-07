@@ -19,12 +19,9 @@
 // Class for managing uart hardware
 class communication{
     private:
-
         logging* logs;
 
         bool enabled = false;
-
-        //TODO: find out if the 32bit array is even needed by the DMA
         union rx_data{
           uint32_t data_words[MAX_PACKET_SIZE];   // rx bytes are packed into this array by the DMA
           uint8_t data_bytes[MAX_PACKET_SIZE*4];  // same data as rx_data, but as bytes
@@ -75,6 +72,9 @@ class communication{
         void generate_tx_cyclic_data(); // prepares tx packet with device address and cyclic data
         void generate_tx_sequential_data(); // finalizes tx packet with sequential data and crc
 
+        inline void tx_hold_low(void);
+        inline void tx_transmit(void);
+
         void enable_tx(void);
         void disable_tx(void);
 
@@ -123,10 +123,12 @@ class communication{
 
         void set_device_address(uint8_t address);
         void enable(void);
+        bool is_enabled(void) { return enabled; } // check if communication is enabled
         bool enable_resync = false;  // resets all timers on the next broascast packet
         
 
         const uint64_t* micros = &microseconds;
+        const uint64_t* last_comm_time = &last_valid_packet_time_us;
         uint64_t get_microseconds(void);
 
         void update_timeout(void);

@@ -1,5 +1,6 @@
 #include "logging.h"
 #include "io_driver.h"
+#include "fans.h"
 #include "device_descriptor.h"
 #include <stdint.h>
 
@@ -9,7 +10,7 @@
 class Mode {
     public:
 
-        Mode(logging* logs, estop_io* io, device_struct** comm_vars);
+        Mode(logging* logs, estop_io* io, fans* fans_, device_struct** comm_vars);
 
         void default_systick_handler(void);
         virtual void systick_handler(void){}
@@ -39,12 +40,15 @@ class Mode {
 
         bool compare_aux_inputs(uint16_t required_inputs);
 
-        uint64_t precharge_time = -1; // target power on time
+        uint64_t precharge_time_min = -1; // min target power on time
+        uint64_t precharge_time_max = -1; // max target power on time
+        uint64_t precharge_overlap_time = -1; // time to overlap precharge and main contactor
 
     protected:
 
         logging* logs;
         estop_io* EstopIO;
+        fans* Fans;
         device_struct** comm_vars;
 
 };

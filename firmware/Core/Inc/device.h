@@ -7,6 +7,7 @@
 #include "communication.h"
 #include "user_io.h"
 #include "io_driver.h"
+#include "fans.h"
 #include "device_descriptor.h"
 
 // main device class that contains all the other classes
@@ -33,12 +34,13 @@ class device {
         communication Comm = communication(&logs); // communication with the controller
         user_io UserIO = user_io(); // user interface (DIP switches and LED)
         estop_io EstopIO = estop_io();
+        fans Fans = fans(&logs); // case fan control
 
         bool hse_vcxo_available = false;
         
         // create all modes
 
-        Mode Default_Mode = Mode(&logs, &EstopIO, &comm_vars);
+        Mode Default_Mode = Mode(&logs, &EstopIO, &Fans, &comm_vars);
                 
         Mode* current_mode = &Default_Mode; // pointer to the current mode
 

@@ -13,7 +13,7 @@ void device::init(){
     sysTick_init();
 
     // comment out for debugging
-    watchdog_init(); // initialize the watchdog timer
+    //watchdog_init(); // initialize the watchdog timer
 
     logs.init();
     logs.comm_vars = comm_vars;
@@ -21,6 +21,7 @@ void device::init(){
     Comm.init();
     UserIO.init();
     EstopIO.init();
+    Fans.init();
 
 
     micros = Comm.micros;
@@ -43,7 +44,7 @@ void device::init(){
     // check for watchdog reset flag
     if(RCC->CSR & RCC_CSR_IWDGRSTF){ // watchdog reset flag is set
         RCC->CSR |= RCC_CSR_RMVF; // clear the reset flag
-        logs.add(system_messages::watchdog_timeout);
+        logs.add((uint32_t)system_messages::watchdog_timeout);
     }
 }
 
@@ -181,7 +182,7 @@ void device::run(){
             watchdog_reload(); // reload the watchdog timer
         }
         if(tim1_update_missed){
-            logs.add(system_messages::control_deadline_missed);
+            logs.add((uint32_t)system_messages::control_deadline_missed);
         }
 
         // handle requested state changes from controller
@@ -189,22 +190,11 @@ void device::run(){
             switch(vars.requested_state){
                 case 0:
                     break; // nothing
-                case 1:
-                    // only one state
-                    logs.add(system_messages::invalid_state);
-                    break;
-                case 2:
-                    // only one state
-                    logs.add(system_messages::invalid_state);
-                    break;
                 case 3:
                     logs.clear_all(); // clear all faults
                     break;
-                case 4:
-                    // only one mode
-                    break;
                 default:
-                    logs.add(system_messages::invalid_state); // invalid state requested
+                    logs.add((uint32_t)system_messages::invalid_state); // invalid state requested
                     break;
             }
             last_controller_requested_state = vars.requested_state;
@@ -228,7 +218,7 @@ void device::run(){
 void device::update(){
 
     if(!Comm.is_ok()){
-        logs.add(communication_messages::timeout_error); // communication timeout error, this will trigger the entire system to shutdown
+        logs.add((uint32_t)communication_messages::timeout_error); // communication timeout error, this will trigger the entire system to shutdown
     }
 
     update_leds();
@@ -252,6 +242,7 @@ void device::SysTick_Handler(void){
 
 void device::flagged_sysTick(void){
     UserIO.SysTick_Handler();
+    Fans.SysTick_Handler();
 
     update();
 

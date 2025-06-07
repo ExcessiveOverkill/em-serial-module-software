@@ -2,13 +2,13 @@
 hardware:
   type: 1 #32 bit
   version: 0  #32 bit
-  readable_name: "Servo drive (model number goes here)"
-  description: "Servo drive designed for industrial high voltage motors"
+  readable_name: "Estop board"
+  description: "Estop board"
 
 firmware:
   version: 0
   release_date: "7/18/2024"
-  description: "Firmware for (model number goes here) rev (hardware rev number goes here) servo drive"
+  description: "Estop board"
 
 
 message_severities:
@@ -188,7 +188,7 @@ messages:
     isolation_contactor_feedback_preset_when_off:
       readable_name: "Isolation contactor feedback missing when off"
       description: "Isolation contactor feedback is missing when it should be off"
-      time_delay_us: 30e3
+      time_delay_us: 60e3
       severity: "critical"
 
     main_contactor_feedback_missing_when_on:
@@ -200,7 +200,7 @@ messages:
     main_contactor_feedback_preset_when_off:
       readable_name: "Main contactor feedback missing when off"
       description: "Main contactor feedback is missing when it should be off"
-      time_delay_us: 30e3
+      time_delay_us: 60e3
       severity: "critical"
 
     precharge_contactor_feedback_missing_when_on:
@@ -212,7 +212,13 @@ messages:
     precharge_contactor_feedback_preset_when_off:
       readable_name: "Precharge contactor feedback missing when off"
       description: "Precharge contactor feedback is missing when it should be off"
-      time_delay_us: 30e3
+      time_delay_us: 60e3
+      severity: "critical"
+
+    precharge_timeout:
+      readable_name: "Precharge timeout"
+      description: "Precharge contactor is on for too long, without controller ok'ing main power"
+      time_delay_us: 0
       severity: "critical"
 
 
@@ -306,11 +312,25 @@ hard_parameters:
     description: "Minimum time to wait before turning on the brake again after it has been turned off, used to prevent rapid cycling of the brake relay"
   
   contactor_minimum_off_time:
-    value: 1000
+    value: 4000
     var_type: "uint16_t"
     unit: "milliseconds"
     readable_name: "Contactor minimum off time"
     description: "Minimum time to wait before turning on the contactor again after it has been turned off, used to prevent rapid cycling of the contactor relay"
+
+  precharge_overlap_time:
+    value: 500
+    var_type: "uint16_t"
+    unit: "milliseconds"
+    readable_name: "Precharge overlap time"
+    description: "Time to wait before turning off the precharge contactor after the main contactor is turned on"
+
+  max_fan_speed_rpm:
+    value: 4200
+    var_type: "uint16_t"
+    unit: "rpm"
+    readable_name: "Max fan speed"
+    description: "Maximum fan speed"
 
   device_starting_address:
     value: 0
@@ -332,7 +352,7 @@ registers:
 # values meant to be read/written by the controller to configure and use the device
 
   communication_update_interval:
-    value: 200000
+    value: 100000
     var_type: "uint32_t"
     unit: "10ns"
     readable_name: "Communication update interval"
@@ -491,18 +511,55 @@ registers:
     description: "which aux inputs are required to release the brake (bitwise selection)"
     permissions: "read/write"
 
-  precharge_delay:
-    value: 3000
+  precharge_done:
+    value: 0
+    var_type: "uint8_t"
+    unit: ""
+    readable_name: "Precharge done"
+    description: "Indicates we can switch to the main contactor"
+    permissions: "write"
+
+  precharge_delay_min:
+    value: 1500
     var_type: "uint16_t"
     unit: "milliseconds"
     readable_name: "Precharge delay"
-    description: "How long to wait before enabling the main contactor after precharge is started"
+    description: "How long to wait before allowing the main contactor to enable after precharge is started"
+    permissions: "read/write"
+
+  precharge_delay_max:
+    value: 4000
+    var_type: "uint16_t"
+    unit: "milliseconds"
+    readable_name: "Precharge delay"
+    description: "How long to allow the precharge contactor to be one without switching to the main contactor (triggers a fault if it is too long)"
+    permissions: "read/write"
+
+  precharge_contactor_external_feedback_polarity:
+    value: 1
+    var_type: "uint8_t"
+    unit: ""
+    readable_name: "Precharge contactor external feedback polarity"
+    description: "Set to 1 if the precharge contactor feedback is inverted (active low), 0 if it is not inverted (active high)"
+    permissions: "read/write"
+
+  main_contactor_external_feedback_polarity:
+    value: 0
+    var_type: "uint8_t"
+    unit: ""
+    readable_name: "Main contactor external feedback polarity"
+    description: "Set to 1 if the main contactor feedback is inverted (active low), 0 if it is not inverted (active high)"
+    permissions: "read/write"
+
+  isolation_contactor_external_feedback_polarity:
+    value: 0
+    var_type: "uint8_t"
+    unit: ""
+    readable_name: "Isolation contactor external feedback polarity"
+    description: "Set to 1 if the isolation contactor feedback is inverted (active low), 0 if it is not inverted (active high)"
     permissions: "read/write"
 
   
-  
-  
-
 
   ####################### COMMUNICATION REGISTERS #######################
 
