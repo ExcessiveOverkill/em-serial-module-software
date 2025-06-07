@@ -110,7 +110,8 @@ void estop_io::read_inputs(void){
                 break;
             case 15:
                 inputs.main_contactor_ext = data;
-                case 16:
+                break;
+            case 16:
                 inputs.aux_1 = data;
                 break;
             case 17:
@@ -133,6 +134,7 @@ void estop_io::read_inputs(void){
                 break;
             case 23:
                 // unconnected
+                break;
             case 24:
                 inputs.aux_11 = data;
                 break;
