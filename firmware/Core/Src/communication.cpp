@@ -24,7 +24,7 @@ void communication::init(){
 	GPIOA->OSPEEDR |= 0b10 << GPIO_OSPEEDR_OSPEED11_Pos;	// set TX as fast speed output
 	GPIOA->AFR[1] |= 8 << GPIO_AFRH_AFSEL11_Pos;	// set PA11 alternate function to 8 (USART6)
 	GPIOA->AFR[1] |= 8 << GPIO_AFRH_AFSEL12_Pos;	// set PA12 alternate function to 8 (USART6)
-	
+
 	GPIOA->BSRR |= GPIO_BSRR_BR11;	// set TX (PA11) low (when not in alternate function mode, this is the default state)
 
 	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOCEN;	// Enable GPIOC  Clock
@@ -309,7 +309,7 @@ void communication::set_tx_packet_length(uint32_t length){
 	// 	while(DMA2_Stream6->CR & (DMA_SxCR_EN_Msk));    // Wait for stream to disable
 	// }
 
-	DMA2_Stream6->NDTR = length * 4;	// set number of 8 bit transfer cycles
+	DMA2_Stream6->NDTR = length << 2;	// set number of 8 bit transfer cycles
 }
 
 
@@ -346,6 +346,9 @@ void communication::set_device_address(uint8_t address){
     \brief Receive data packet
 */
 void communication::start_receive(){
+	restart_rx_sync_capture();
+	clear_rx_idle_flag();
+	restart_rx_dma();
 	receive_complete = false;
 	receive_started = true;
 	USART6->CR3 |= USART_CR3_DMAR;	// Enable DMA for rx
@@ -369,7 +372,6 @@ void communication::start_transmit(){
 
 	//USART6->DR = 0b10101010;	// send dummy byte
 	USART6->CR1 |= USART_CR1_TE;	// Enable Transmitter
-	
 }
 
 
@@ -461,13 +463,13 @@ uint32_t communication::calculate_crc(uint32_t *data, uint8_t data_length){
 }
 
 int8_t communication::verify_rx_packet(){
+
 	// pre-check address before CRC for performance (if the address is invalid, valid or invalid CRC makes no difference)
 	if((rx.data_bytes[0] != device_address && rx.data_bytes[0] != 0xFF)){	// verify device address matches
 		return -1;	// invalid packet
 	}
 
-	if(calculate_crc(rx.data_words, expected_rx_length-1) == rx.data_words[expected_rx_length-1]){	// verify CRC is correct
-		
+	if(calculate_crc(rx.data_words, expected_rx_length-1) == rx.data_words[expected_rx_length-1]){	// verify CRC is correct		
 		if(rx.data_bytes[0] == 0xFF){	// broadcast address
 			return 1;	// broadcast mode
 		}
