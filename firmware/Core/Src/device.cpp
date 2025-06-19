@@ -217,19 +217,29 @@ void device::run(){
 
 void device::update(){
 
+    
+    comm_vars->fan_fbk_speed = Fans.get_fan_speed_u16(); // update the communication variables with the current fan speed
+
     if(!Comm.is_ok()){
         logs.add((uint32_t)communication_messages::timeout_error); // communication timeout error, this will trigger the entire system to shutdown
+        Fans.set_speed_u16(30000); // mid speed fan to prevent overheating on timeout
+    }
+    else{
+        Fans.set_speed_u16(comm_vars->fan_cmd_speed); // set the fan speed based on the communication variables
     }
 
     update_leds();
 }
 
 void device::update_leds(){
-    if(Comm.is_ok()){
-        UserIO.set_led_state(UserIO.blink_fast);
+    if(!Comm.is_ok()){
+        UserIO.set_led_state(UserIO.blink_slow);
+    }
+    else if(logs.get_active_severity() >= message_severities::error){
+        UserIO.set_led_state(UserIO.blink_medium);
     }
     else{
-        UserIO.set_led_state(UserIO.blink_slow);
+        UserIO.set_led_state(UserIO.blink_fast);
     }
 }
 

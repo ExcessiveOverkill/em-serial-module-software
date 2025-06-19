@@ -14,7 +14,7 @@ void fans::configure_GPIOB6_for_PWM(void){
     // Configure PB6 as alternate function (AF2 for TIM4_CH1)
     GPIOB->MODER &= ~(GPIO_MODER_MODER6);
     GPIOB->MODER |= (GPIO_MODER_MODER6_1);
-    GPIOB->AFR[0] |= (2 << GPIO_AFRL_AFSEL0_Pos);
+    GPIOB->AFR[0] |= (2 << GPIO_AFRL_AFSEL6_Pos);
 }
 
 void fans::configure_TIM4_for_PWM(void){
@@ -90,7 +90,14 @@ uint32_t fans::set_speed(uint32_t speed_rpm)
     // Limit speed
     if (speed_rpm > MAX_FAN_SPEED_RPM) speed_rpm = MAX_FAN_SPEED_RPM;
 
-    set_speed_rpm = speed_rpm;
+    cmd_speed_u16 = (speed_rpm * UINT16_MAX) / MAX_FAN_SPEED_RPM; // Convert RPM to 16-bit full scale
+
+    return 0;
+}
+
+uint32_t fans::set_speed_u16(uint16_t speed_u16)
+{
+    cmd_speed_u16 = speed_u16;
 
     return 0;
 }
@@ -100,13 +107,18 @@ uint32_t fans::get_fan_speed_rpm(void)
     return tachometer_rpm;
 }
 
+uint16_t fans::get_fan_speed_u16(void)
+{
+    return tachometer_rpm / MAX_FAN_SPEED_RPM * UINT16_MAX; // Convert RPM to 16-bit full scale
+}
+
 void fans::SysTick_Handler()
 {   
     if(update_cycle_count >= tach_sample_count)
     {
         // Set fan speed
-        uint32_t duty_cycle = (set_speed_rpm * 1000) / MAX_FAN_SPEED_RPM;
-        TIM5->CCR1 = duty_cycle;
+        uint32_t duty_cycle = (cmd_speed_u16 * 1000) / UINT16_MAX; // Convert 16-bit speed to duty cycle (0-1000)
+        TIM4->CCR1 = duty_cycle;
 
         // Read tachometer 1 values
         tachometer_rpm = TIM3->CNT * SYSTICK_FREQUENCY * (60/2) / tach_sample_count;  // 2 pulses per revolution, convert to RPM

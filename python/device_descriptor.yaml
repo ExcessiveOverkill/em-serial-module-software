@@ -559,6 +559,30 @@ registers:
     description: "Set to 1 if the isolation contactor feedback is inverted (active low), 0 if it is not inverted (active high)"
     permissions: "read/write"
 
+  fan_cmd_speed:
+    value: 0
+    var_type: "uint16_t"
+    unit: ""
+    readable_name: "Fan command speed"
+    description: "Commanded fan speed, 0 to disable the fan"
+    permissions: "read/write"
+
+  fan_fbk_speed:
+    value: 0
+    var_type: "uint16_t"
+    unit: ""
+    readable_name: "Fan feedback speed"
+    description: "Actual fan speed scaled to 16bit, read only"
+    permissions: "read"
+
+  status:
+    value: 0
+    var_type: "uint8_t"
+    unit: ""
+    readable_name: "Status"
+    description: "Current status of the device, bitwise (bit 0: fault, bit 1: idle, bit 2: ready)"
+    permissions: "read"
+
   
 
   ####################### COMMUNICATION REGISTERS #######################

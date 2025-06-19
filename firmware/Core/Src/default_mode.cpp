@@ -31,6 +31,16 @@ void Mode::flagged_tim1_up_tim10(){
     update_feedback(); // update feedback from the system to the controller
 
     EstopIO->write_outputs();
+
+    // bit 0: fault, bit 1: idle, bit 2: ready
+    uint8_t status = 0; // default status is ok
+    if(logs->get_active_severity() >= message_severities::error){
+        status = 0b001; // fault
+    }
+    else{
+        status = 0b100; // ready
+    }
+    (*comm_vars)->status = status;
 }
 
 void Mode::run_checks(void){

@@ -21,7 +21,7 @@ class fans{
       const uint32_t tach_sample_count = SYSTICK_FREQUENCY * tach_sample_period_ms / 1000;
       uint32_t update_cycle_count = 0;
 
-      uint32_t set_speed_rpm = 0;
+      uint16_t cmd_speed_u16 = 0;
       uint16_t tachometer_rpm = 0;
 
       void configure_GPIOB6_for_PWM(void);
@@ -40,8 +40,10 @@ class fans{
         void init();
 
         uint32_t set_speed(uint32_t speed_rpm);
+        uint32_t set_speed_u16(uint16_t speed_u16);
 
         uint32_t get_fan_speed_rpm(void);
+        uint16_t get_fan_speed_u16(void);
 
         void SysTick_Handler();
 };
